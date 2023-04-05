@@ -10,11 +10,11 @@ import util.Util;
 @ManagedBean(name = "PaisController")
 @SessionScoped
 public class PaisController implements Serializable{
-    private PaisDao dao;
+    private PaisDao<Pais> dao;
     private Pais objeto;
     
     public PaisController(){
-        dao = new PaisDao();
+        dao = new PaisDao<>();
     }
     
     public PaisDao getDao() {
@@ -43,7 +43,13 @@ public class PaisController implements Serializable{
     }
     
     public String salvar(){
-        if(dao.salvar(objeto)){
+        boolean persistiu = false;
+        if(objeto.getId() == null){
+            persistiu=dao.persist(objeto);
+        }else{
+            persistiu=dao.merge(objeto);
+        }
+        if(persistiu){
             Util.infoMessage(dao.getMensagem());
             return "listar?faces-redirect=true";      
         }
@@ -65,14 +71,11 @@ public class PaisController implements Serializable{
     
     public void remover(Integer id){
         objeto = dao.localizar(id);
-        if (dao.remover(objeto)){
+        if (dao.remove(objeto)){
             Util.infoMessage(dao.getMensagem());
         }
             else{
             Util.errorMessage(dao.getMensagem());
         }
-    }
-
-    
-    
+    }       
 }
