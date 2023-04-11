@@ -1,0 +1,111 @@
+<!Relacionamento Muitos para um
+    ManyToOne>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/templates/template.xhtml">
+        <ui:define name ="titulo">Listagem de Estados</ui:define>
+        <ui:define name="conteudo">
+            <h:form id="formListagem">
+                <p:growl/>
+                <p:commandButton value="Novo" actionListener="#{EstadoController.novo()}" icon="ui-icon-plus" 
+                                 oncomplete="PF('dlg').show();" update=":formEdicao"/>
+                <div align="center">
+                <p:panelGrid columns="11">
+                    <p:outputLabel value="Ordem:"/>
+                    <p:selectOneMenu value="#{EstadoController.dao.ordem}">
+                        <f:selectItem itemLabel="ID" itemValue="id"/>
+                        <f:selectItem itemLabel="Nome" itemValue="nome"/>
+                        <f:selectItem itemLabel="Pais" itemValue="pais.nome"/>
+                        <p:ajax update="listagem"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Filtro:"/>
+                    <p:inputText value="#{EstadoController.dao.filtro}" size="15">
+                        <p:ajax update ="listagem" event="keyup"/>
+                    </p:inputText>
+                    <p:commandButton value="Filtrar" update="listagem" icon="ui-icon-search"/>
+                    <p:outputLabel value="Máximo de objetos"/>
+                    <p:inputNumber value="#{EstadoController.dao.maximoObjetos}" decimalPlaces="0"
+                                   decimalSeparator="" thousandSeparator=""/>
+                    <p:commandButton value="Primeiro" actionListener="#{EstadoController.dao.primeiraPagina()}"
+                                     icon="ui-icon-seek-first" update="listagem"/>
+                    <p:commandButton value="Anterior" actionListener="#{EstadoController.dao.anteriorPagina()}"
+                                     icon="ui-icon-seek-prev" update="listagem"/>
+                    <p:commandButton value="Próxima" actionListener="#{EstadoController.dao.proximaPagina()}"
+                                     icon="ui-icon-seek-next" update="listagem"/>
+                    <p:commandButton value="Última" actionListener="#{EstadoController.dao.ultimaPagina()}"
+                                     icon="ui-icon-seek-end" update="listagem"/>
+                </p:panelGrid>
+                </div>
+                <p:dataTable value="#{EstadoController.dao.listaObjetos}" var="objeto" id="listagem">
+                    <f:facet name="footer">
+                        <p:outputLabel value="#{EstadoController.dao.mensagemNavegacao}"/>
+                    </f:facet>
+                    <p:column headerText="ID">
+                        <p:outputLabel value="#{objeto.id}"/>
+                    </p:column>
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{objeto.nome}"/>
+                    </p:column>
+                    <p:column headerText="UF">
+                        <p:outputLabel value="#{objeto.uf}"/>
+                    </p:column>
+                    <p:column headerText="Pais">
+                        <p:outputLabel value="#{objeto.pais.nome}"/>
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <div align="center">
+                            <p:commandButton actionListener="#{EstadoController.editar(objeto.id)}" icon="ui-icon-pencil"
+                                             oncomplete="PF('dlg').show();" update=":formEdicao" title="Editar"/>
+                            <p:commandButton actionListener="#{EstadoController.remover(objeto.id)}" icon="ui-icon-trash"
+                                             title="Remover" update="@form" 
+                                             onclick="if (!confirm('Confirma a exlusão?'))return false"/>
+                        </div>
+                             
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+        <ui:define name="dialogos">
+            <p:dialog widgetVar="dlg" header="Edição" modal="true" resizable="false" minimizable="true" maximizable="true">
+                <h:form id="formEdicao">
+                    <p:growl/>
+                    <div align="center">
+                        <p:panelGrid columns="2">
+                            <f:facet name="footer">
+                                <div align="center">
+                                    <p:commandButton value="Salvar" icon="ui-icon-disk" 
+                                                     actionListener="#{EstadoController.salvar()}"
+                                                     oncomplete="if(!args.validationFailed){PF('dlg').hide();}"
+                                                     update=":formEdicao :formListagem"/>
+                                </div>
+                            </f:facet>
+                            <p:outputLabel value="ID"/>
+                            <p:inputText value="#{EstadoController.objeto.id}" readonly="true" size="5"/>
+                            <p:outputLabel value="Nome" for="txtNome"/>
+                            <p:inputText id="txtNome" value="#{EstadoController.objeto.nome}" size="50" maxlength="50"
+                                         placeholder="Obrigatório"/>
+                            <p:outputLabel value="UF" for="txtUF"/>
+                            <p:inputText id="txtUF" value="#{EstadoController.objeto.uf}" size="3" maxlength="2"
+                                         placeholder="Obrigatório"/>
+                            <p:outputLabel value="Pais" for="selectPais"/>
+                            <p:selectOneMenu id="selectPais" value="#{EstadoController.objeto.pais}">
+                                <f:converter converterId="PaisConverter"/>
+                                <f:selectItem itemLabel="Selecione um registro" noSelectionOption="true"/>
+                                <f:selectItems value="#{EstadoController.paisDao.listaTodos}" var="p" 
+                                               itemLabel="#{p.nome}"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </div>
+                    <ui:include src="/templates/ajaxstatus.xhtml"/>
+                        
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

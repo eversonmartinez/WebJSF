@@ -1,3 +1,5 @@
+//Relacionamento Muitos para um
+//ManyToOne
 package controller;
 
 import br.edu.ifsul.modelo.Estado;
@@ -9,7 +11,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import util.Util;
 
-@ManagedBean(name = "PaisController")
+@ManagedBean(name = "EstadoController")
 @ViewScoped
 public class EstadoController implements Serializable{
     private EstadoDao<Estado> dao;
