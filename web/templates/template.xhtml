@@ -30,6 +30,15 @@
                                 </p:submenu>
                             </p:column>
                         </p:submenu>
+                        <p:submenu label="Relatórios">
+                            <p:column>
+                                <p:submenu label="Produtos">
+                                    <p:menuitem action="#{PessoaFisicaController.imprimeProdutos()}"
+                                                value="Produtos"
+                                                ajax="false" target="_blank"/>
+                                </p:submenu>
+                            </p:column>
+                        </p:submenu>
                     </p:megaMenu>
                 </h:form>
             </p:layoutUnit>

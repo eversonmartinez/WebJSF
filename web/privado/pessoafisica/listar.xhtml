@@ -75,11 +75,11 @@
             </h:form>
         </ui:define>
         <ui:define name="dialogos">
-            <p:dialog widgetVar="dlg" header="Edição" modal="true" resizable="false" minimizable="true" maximizable="true">
+            <p:dialog widgetVar="dlg" header="Edição" modal="true" resizable="false" width="60%" height="450">
                 <h:form id="formEdicao">
                     <p:growl id="growl"/>
                     <p:tabView id="tab">
-                        <p:tab title="Dados Princiais">
+                        <p:tab title="Dados Principais">
                             <div align="center">
                                 <p:panelGrid columns="2">
                                     <f:facet name="footer">
@@ -97,7 +97,7 @@
                                                  placeholder="Obrigatório"/>
                                     <p:outputLabel value="Telefone" for="txtTelefone"/>
                                     <p:inputMask id="txtTelefone" value="#{PessoaFisicaController.objeto.telefone}"
-                                                 mask="(99)99999-9999" placeholder="Obrigatório" size="13"/>
+                                                 mask="(99)99999-9999" placeholder="Obrigatório" size="14"/>
                                     <p:outputLabel value="Nome" for="txtNome"/>
                                     <p:inputText id="txtEmail" value="#{PessoaFisicaController.objeto.email}" size="50" maxlength="50"
                                                  placeholder="Obrigatório"/>
@@ -164,25 +164,113 @@
                                         <p:commandButton id="btnAlterarEndereco"
                                                          icon="ui-icon-pencil"
                                                          actionListener="#{PessoaFisicaController.alterarEndereco(idx)}"
-                                                         update="form:Endereco" process="btnAlterarEndereco"
-                                                         oncomplete="Pf('dlgEndereco').show();"/>
+                                                         update=":formEndereco" process="btnAlterarEndereco"
+                                                         oncomplete="PF('dlgEndereco').show();"/>
                                         <p:commandButton id="btnRemoverEndereco"
                                                          icon="ui-icon-trash"
                                                          actionListener="#{PessoaFisicaController.removerEndereco(idx)}"
                                                          update="listaEnderecos :formEdicao:growl" process="btnRemoverEndereco"
-                                                         onclick="if (!confirm('Confirma'))"/>
+                                                         onclick="if (!confirm('Confirma a exclusão do endereço?')) return false"/>
                                     </div>
                                 </p:column>
                             </p:dataTable>
                             
                         </p:tab>
                         <p:tab title="Desejos">
+                            <p:dataTable value="#{PessoaFisicaController.objeto.desejos}"
+                                         var="des" rowIndexVar="idxDes" id="listaDesejos">
+                                <f:facet name="header">
+                                    <p:panelGrid columns="2">
+                                        <p:selectOneMenu value="#{PessoaFisicaController.produto}"
+                                                         id="selectProduto">
+                                            <f:converter converterId="produtoConverter"/>
+                                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                                            <f:selectItems value="#{PessoaFisicaController.produtoDao.listaTodos}" var="prod"
+                                                           itemLabel="#{prod.nome}"/>
+                                        </p:selectOneMenu>
+                                        <p:commandButton value="adicionar" actionListener="#{PessoaFisicaController.adicionarDesejo()}"
+                                                         update="listaDesejos :formEdicao:growl" id="btnAdicionarDesejo"
+                                                         process="btnAdicionarDesejo selectProduto"
+                                                         icon="ui-icon-plus"/>
+                                    </p:panelGrid>
+                                </f:facet>
+                                <p:column headerText="Nome">
+                                    <p:outputLabel value="#{des.nome}"/>
+                                </p:column>
+                                <p:column headerText="Marca">
+                                    <p:outputLabel value="#{des.marca}"/>
+                                </p:column>
+                                <p:column headerText="Ações">
+                                    <div align="center">
+                                        <p:commandButton id="btnRemoverDesejo" 
+                                                         actionListener="#{PessoaFisicaController.removerDesejo(idxDes)}"
+                                                         process="btnRemoverDesejo" update="listaDesejos :formEdicao:growl"
+                                                         icon="ui-icon-trash"
+                                                         onclick="if(!confirm('Confirma a remoção do desejo?')) return false"/>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
                             
+                                         
                         </p:tab>
                     </p:tabView>
                     
                     <ui:include src="/templates/ajaxstatus.xhtml"/>
                         
+                </h:form>
+            </p:dialog>
+            <p:dialog header="Edição de Endereços" widgetVar="dlgEndereco" resizable="false" modal="true">
+                <h:form id="formEndereco" >
+                    <p:growl/>
+                    <p:panelGrid columns="2">
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p:commandButton id="btnSalvarEndereco" value="Salvar"
+                                                 icon="ui-icon-disk"
+                                                 actionListener="#{PessoaFisicaController.salvarEndereco()}"
+                                                 update=":formEdicao:tab:listaEnderecos formEndereco"
+                                                 process="@form"
+                                                 oncomplete="if(!args.validationFailed) {PF('dlgEndereco').hide();}"/>
+                            </div>
+                        </f:facet>
+                        <p:outputLabel value="Nickname" for="txtNickName"/>
+                        <p:inputText id="txtNickName" value="#{PessoaFisicaController.endereco.nickname}"
+                                     size="20" maxlength="20" placeholder="Obrigatório"/>
+                        <p:outputLabel value="Endereço" for="txtEndereco"/>
+                        <p:inputText id="txtEndereco" value="#{PessoaFisicaController.endereco.endereco}"
+                                     size="50" maxlength="50" placeholder="Obrigatório"/>
+                        <p:outputLabel value="Número" for="txtNumero"/>
+                        <p:inputText id="txtNumero" value="#{PessoaFisicaController.endereco.numero}"
+                                     size="10" maxlength="10" placeholder="Obrigatório"/>
+                        <p:outputLabel value="Complemento" for="txtComplemento"/>
+                        <p:inputText id="txtComplemento" value="#{PessoaFisicaController.endereco.complemento}"
+                                     size="20" maxlength="20" placeholder="Obrigatório"/>
+                        <p:outputLabel value="CEP" for="txtCEP"/>
+                        <p:inputMask id="txtCEP" value="#{PessoaFisicaController.endereco.cep}"
+                                     mask="99999-999"
+                                     size="9" maxlength="9" placeholder="Obrigatório"/>
+                        <p:outputLabel value="Bairro" for="txtBairro"/>
+                        <p:inputText id="txtBairro" value="#{PessoaFisicaController.endereco.bairro}"
+                                     size="40" maxlength="40" placeholder="Obrigatório"/>
+                        <p:outputLabel value="Referência" for="txtReferencia"/>
+                        <p:inputText id="txtReferencia" value="#{PessoaFisicaController.endereco.referencia}"
+                                     size="30" maxlength="30" placeholder="Obrigatório"/>
+                        <p:outputLabel value="Cidade" for="selectCidade"/>
+                        <p:selectOneMenu id="selectCidade" value="#{PessoaFisicaController.endereco.cidade}">
+                            <f:converter converterId="cidadeConverter"/>
+                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                            <f:selectItems value="#{PessoaFisicaController.cidadeDao.listaTodos}"
+                                           var="c" itemLabel="#{c.nome}"/>
+                            
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Tipo de endereço" for="selectTipoEndereco"/>
+                        <p:selectOneMenu id="selectTipoEndereco" value="#{PessoaFisicaController.endereco.tipoEndereco}">
+                            <f:converter converterId="tipoEnderecoConverter"/>
+                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                            <f:selectItems value="#{PessoaFisicaController.tipoEnderecoDao.listaTodos}"
+                                           var="te" itemLabel="#{te.descricao}"/>                
+                        </p:selectOneMenu> 
+                    </p:panelGrid>
                 </h:form>
             </p:dialog>
         </ui:define>

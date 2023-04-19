@@ -5,14 +5,18 @@ package controller;
 import br.edu.ifsul.modelo.Endereco;
 import br.edu.ifsul.modelo.PessoaFisica;
 import br.edu.ifsul.modelo.Pais;
+import br.edu.ifsul.modelo.Produto;
 import dao.CidadeDao;
 import dao.PessoaFisicaDao;
 import dao.PaisDao;
+import dao.ProdutoDao;
 import dao.TipoEnderecoDao;
 import java.io.Serializable;
+import java.util.HashMap;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import util.Util;
+import util.UtilRelatorios;
 
 @ManagedBean(name = "PessoaFisicaController")
 @ViewScoped
@@ -24,11 +28,14 @@ public class PessoaFisicaController implements Serializable {
     private TipoEnderecoDao tipoEnderecoDao;
     private Endereco endereco;
     private Boolean novoEndereco;
+    private ProdutoDao<Produto> produtoDao;
+    private Produto produto;
 
     public PessoaFisicaController() {
         dao = new PessoaFisicaDao<>();
         cidadeDao = new CidadeDao();
         tipoEnderecoDao = new TipoEnderecoDao();
+        produtoDao = new ProdutoDao<>();
     }
 
     public PessoaFisicaDao getDao() {
@@ -136,4 +143,41 @@ public class PessoaFisicaController implements Serializable {
         this.novoEndereco = novoEndereco;
     }
 
+    public ProdutoDao<Produto> getProdutoDao() {
+        return produtoDao;
+    }
+
+    public void setProdutoDao(ProdutoDao<Produto> produtoDao) {
+        this.produtoDao = produtoDao;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+    
+    public void adicionarDesejo(){
+        if(produto!=null){
+            if(!objeto.getDesejos().contains(produto)){
+                objeto.getDesejos().add(produto);
+                Util.infoMessage("Desejo adicionado com sucesso!");
+            } else{
+                Util.errorMessage("Este desejo já existe na sua lista!");
+            }
+        }
+    }
+    
+    public void removerDesejo(int index){
+        produto = objeto.getDesejos().get(index);
+        objeto.getDesejos().remove(produto);
+        Util.infoMessage("Desejo removido com sucesso");
+    }
+    
+    public void imprimeProdutos(){
+        HashMap parametros = new HashMap();
+        UtilRelatorios.imprimeRelatorio("relatorioProdutos", parametros, produtoDao.getListaTodos());
+    }
 }

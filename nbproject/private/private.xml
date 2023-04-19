@@ -3,10 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/WebJSF/web/privado/pessoafisica/listar.xhtml</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/WebJSF/web/templates/template.xhtml</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/WebJSF/src/java/controller/PessoaFisicaController.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/WebJSF/src/java/converters/ConverterCalendar.java</file>
+            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/WebJSF/src/java/controller/LoginController.java</file>
+            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/WebJSF/src/java/dao/PessoaFisicaDao.java</file>
         </group>
     </open-files>
 </project-private>

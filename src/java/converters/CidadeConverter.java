@@ -12,7 +12,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@FacesConverter(value="CidadeConverter")
+@FacesConverter(value="cidadeConverter")
 public class CidadeConverter implements Converter, Serializable {
     
     //converte da tela para o objeto
